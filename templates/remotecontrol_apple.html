@@ -641,25 +641,40 @@
               up: null,
             }
 
-            let wdaTouch = (x, y) => {
+            let wdaTouch = (x, y, duration) => {
               return $.ajax({
                 method: "POST",
-                url: this.path2url("/session/" + this.session.id + "/wda/tap/0"),
-                data: JSON.stringify({ x, y })
+                url: this.path2url("/session/" + this.session.id + "/actions"),
+                data: JSON.stringify({"actions": [{
+                  "type": "pointer",
+                  "id": "finger1",
+                  "parameters": {"pointerType": "touch"},
+                  "actions": [
+                    {"type": "pointerMove", "duration": 0, "x": x, "y": y},
+                    {"type": "pointerDown", "button": 0},
+                    {"type": "pause", "duration": duration},
+                    {"type": "pointerUp", "button": 0}
+                  ]
+                }]})
               })
             }
 
             let wdaSwipe = (fromX, fromY, toX, toY, duration) => {
               return $.ajax({
-                url: this.path2url("/session/" + this.session.id + "/wda/dragfromtoforduration"),
+                url: this.path2url("/session/" + this.session.id + "/actions"),
                 method: "POST",
-                data: JSON.stringify({
-                  fromX: fromX,
-                  fromY: fromY,
-                  toX: toX,
-                  toY: toY,
-                  duration: duration || 0.01, // seconds
-                })
+                data: JSON.stringify({"actions":[{
+                  "type": "pointer",
+                  "id": "finger1",
+                  "parameters": {"pointerType": "touch"},
+                  "actions": [
+                    {"type": "pointerMove", "duration": 0, "x": fromX, "y": fromY},
+                    {"type": "pointerDown", "button": 0},
+                    {"type":"pause","duration":40},
+                    {"type": "pointerMove", "duration": duration, "x": toX, "y": toY},
+                    {"type": "pointerUp", "button": 0}
+                  ]
+                }]})
               })
             }
 
@@ -677,15 +692,15 @@
                 if (duration < 200) { // click
                   // click
                   console.log("touch", x, y)
-                  return wdaTouch(x, y)
+                  return wdaTouch(x, y, 10)
                 } else {
                   // long click
                   console.log("touchHold", x, y)
-                  return wdaSwipe(startX, startY, x, y, duration / 1000)
+                  return wdaTouch(x, y, duration)
                 }
               } else {
                 console.log("swipe:", mousePos.down, "to", { x, y }, duration)
-                return wdaSwipe(startX, startY, x, y, 0.01)
+                return wdaSwipe(startX, startY, x, y, 10)
               }
             }
 
