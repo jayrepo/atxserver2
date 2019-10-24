@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}设备远程控制{% end %}
+{% block title %}Device Remote Control{% end %}
 
 
 {% block style %}
@@ -121,7 +121,7 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <div class="navbar-nav">
         <a class="nav-item nav-link active" href="/">
-          <i class="fab fa-apple"></i> 苹果设备</a>
+          <i class="fab fa-apple"></i> iOS Devices</a>
         <!-- <a class="nav-item nav-link active" href='/'> -->
         <!-- </a> -->
       </div>
@@ -132,14 +132,15 @@
             {{current_user.email}}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="/user">用户信息</a>
+            <a class="dropdown-item" href="/user">Profile</a>
             <a class="dropdown-item" href="/logout">Logout</a>
           </div>
         </div>
         <form class="form-inline">
-          <button class="btn btn-warning" type="button" @click="stopUsing">停止使用</button>
+          <button class="btn btn-warning" type="button"
+            @click="stopUsing">Stop</button>
           <span ref="usingTime" class="navbar-text" style="margin-left: 1em">
-            使用时长
+            Elapsed
           </span>
         </form>
       </div>
@@ -184,24 +185,25 @@
     </div>
     <div class="col-sm debugarea height-auto-fill flex-reset" style="overflow-y: auto">
       <el-tabs v-model="activeName" @tab-click="handleTabClick">
-        <el-tab-pane label="常用" name="common">
+        <el-tab-pane label="General" name="common">
           <div class="card-columns">
             <div class="card">
               <div class="card-header">
-                <i class="fab fa-angellist"></i> 常用功能
-                <span style="font-size: 0.7em; padding-top: 5px; color: gray">注: iOS的弹窗不能通过屏幕点击来选择</span>
+                <i class="fab fa-angellist"></i> General 
+                <span style="font-size: 0.7em; padding-top: 5px; color:
+                  gray">Note: popup of iOS cannot be selected by tapping</span>
               </div>
               <div class="card-body">
                 <el-button size="mini" @click="hotfix">
                   <i class="fas fa-hammer"></i>
-                  修复旋转
+                  Fix Rotation
                 </el-button>
-                <el-button size="mini" @click="screenshot">截图</el-button>
+                <el-button size="mini" @click="screenshot">Screenshot</el-button>
 
                 <el-button size="mini" :loading="alert.loading" @click="chooseAlertButtons">
-                  选择弹框按钮
+                  Select Popup Button
                 </el-button>
-                <el-dialog title="弹窗选择" :visible.sync="alert.visible">
+                <el-dialog title="Select Popup" :visible.sync="alert.visible">
                   <span style="padding: 5px" v-for="v in alert.buttons">
                     <el-button round size="small" @click="alertAccept(v); alert.visible=false">{{!v}}</el-button>
                   </span>
@@ -212,19 +214,19 @@
 
             <div class="card">
               <div class="card-header">
-                <i class="fas fa-bolt"></i> 快捷启动
+                <i class="fas fa-bolt"></i> Shortcuts
               </div>
               <div class="card-body">
                 <el-button round size="small" @click="appOpen('com.apple.Preferences')">
                   <i class="el-icon-setting"></i>
-                  设置
+                  Settings
                 </el-button>
               </div>
             </div>
 
             <div class="card">
               <div class="card-header">
-                <i class="fas fa-bug"></i> 调试信息
+                <i class="fas fa-bug"></i> Debug Info
               </div>
               <div class="card-body">
                 <dl>
@@ -249,7 +251,7 @@
 
             <div class="card">
               <div class="card-header">
-                <i class="fas fa-cubes"></i> 安装管理
+                <i class="fas fa-cubes"></i> Installation
               </div>
               <div class=card-body">
                 <!-- <el-button>Accept(TODO)</el-button> -->
@@ -257,15 +259,16 @@
                   <el-upload ref="upload" drag accept=".ipa" action="/uploads" :on-success="onUpload"
                     :on-preview="onUploadSelect">
                     <i class="el-icon-upload"></i>
-                    <div class="el-upload__text">将安装包拖到此处安装，或<em>点击上传</em></div>
-                    <div class="el-upload__tip" slot="tip">只能上传ipa文件，且不超过2G</div>
+                    <div class="el-upload__text">Drop
+                      package here to install，or <em>click to upload</em></div>
+                    <div class="el-upload__tip" slot="tip">ipa file &lt; 2G only</div>
                   </el-upload>
                   <div class="form-group">
                     <label>URL</label>
                     <input type="text" placeholder="http://..." v-model="app.url" class="form-control form-control-sm">
                   </div>
                   <el-button @click="appInstall" :loading="!app.finished" :disabled="!app.finished || !app.url"
-                    size="small">安装</el-button>
+                    size="small">Install</el-button>
                   <hr v-if="!!app.message">
                   <pre style="white-space: normal" v-text="app.message"></pre>
                 </div>
@@ -392,10 +395,10 @@
                   this.$alert(ret.value)
                   break;
                 case 27:
-                  this.$alert("未检测到系统弹窗")
+                  this.$alert("System popup not detected")
                   break;
                 default:
-                  this.$alert("未知异常，打开开发者选项查看问题")
+                  this.$alert("Unkone error, open dev tools to see details")
                   console.error(ret)
               }
             }).always(() => {
@@ -455,7 +458,7 @@
             const url = this.app.url
 
             this.app.finished = false
-            this.app.message = "安装中 ..."
+            this.app.message = "Installing..."
             $.ajax({
               method: "post",
               url: this.source.url + "/app/install?udid=" + this.udid,
@@ -463,9 +466,9 @@
                 url: url,
               }
             }).done(ret => {
-              this.app.message = "安装成功"
+              this.app.message = "Install succeeded"
             }).fail(err => {
-              this.app.message = "安装失败 " + err.responseJSON.description;
+              this.app.message = "Install Failed " + err.responseJSON.description;
             }).always(() => {
               this.app.finished = true
             })
@@ -498,7 +501,7 @@
                   })
                   .fail(function (ret) {
                     console.log(ret)
-                    alert("设备可能被释放了，Press F12 to debug")
+                    alert("Device might be released，press F12 to debug")
                     // let content = '设备' + this.idleTimeout + "秒内没有操作，设备自动释放，点击刷新重新占用该设备"
                     // this.$alert(content, '设备超时提示', {
                     //   confirmButtonText: '刷新',
@@ -583,7 +586,7 @@
                 this.display.ws = null;
                 this.$message({
                   showClose: true,
-                  message: "设备屏幕同步中断",
+                  message: "Screen streaming interupped",
                   type: "error",
                 })
                 this.canvasStyle.opacity = 0.5
