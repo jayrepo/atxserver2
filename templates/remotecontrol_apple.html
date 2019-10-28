@@ -366,12 +366,9 @@
           appOpen(bundleId) {
             return $.ajax({
               method: "post",
-              url: this.path2url("/session"),
+              url: this.path2url("/session/" + this.session.id + "/wda/apps/launch"),
               data: JSON.stringify({
-                desiredCapabilities: {
                   bundleId: bundleId,
-                  shouldWaitForQuiescence: true,
-                }
               })
             }).then(ret => {
               this.session.id = ret.sessionId
