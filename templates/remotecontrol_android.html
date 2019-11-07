@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}设备远程控制{% end %}
+{% block title %}Device Remote Control{% end %}
 
 
 {% block style %}
@@ -111,7 +111,7 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
       <div class="navbar-nav">
         <a class="nav-item nav-link active" href="/">
-          <i class="fas fa-list-alt"></i> 设备控制</a>
+          <i class="fas fa-list-alt"></i> Device Control</a>
         <!-- <a class="nav-item nav-link active" href='/'> -->
         <!-- </a> -->
       </div>
@@ -122,14 +122,14 @@
             {{current_user.email}}
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-            <a class="dropdown-item" href="/user">用户信息</a>
+            <a class="dropdown-item" href="/user">Profile</a>
             <a class="dropdown-item" href="/logout">Logout</a>
           </div>
         </div>
         <form class="form-inline">
-          <button class="btn btn-warning" type="button" @click="stopUsing">停止使用</button>
+          <button class="btn btn-warning" type="button" @click="stopUsing">Stop</button>
           <span ref="usingTime" class="navbar-text" style="margin-left: 1em">
-            使用时长
+            Elapsed
           </span>
         </form>
       </div>
@@ -166,7 +166,7 @@
           <i v-else class="fas fa-keyboard" style="color:gray"></i>
         </span>
         <span @click="hotfix" class="cursor-pointer">
-          <i title="hotfix" class="fas fa-hammer"></i> 修复旋转
+          <i title="hotfix" class="fas fa-hammer"></i> Fix Rotation
         </span>
       </section>
       <!-- screen body -->
@@ -195,14 +195,14 @@
     </div>
     <div class="col-sm height-auto-fill" style="min-height: 0; overflow-y: auto">
       <el-tabs v-model="activeName" @tab-click="handleTabClick">
-        <el-tab-pane label="常用" name="common">
+        <el-tab-pane label="General" name="common">
           <div class="card-columns" ref="commonContainer">
             <div class="card">
               <div class="card-header">
-                <i class="fas fa-keyboard"></i> 输入框
+                <i class="fas fa-keyboard"></i> Input
                 <span class="float-right">
-                  <el-tooltip effect="dark" content="修复输入法" placement="top-start">
-                    <i class="fas fa-tools float-right cursor-pointer" @click="fixInputMethod"> 修复输入法</i>
+                  <el-tooltip effect="dark" content="Fix input method" placement="top-start">
+                    <i class="fas fa-tools float-right cursor-pointer" @click="fixInputMethod"> Fix Input Method</i>
                   </el-tooltip>
                 </span>
               </div>
@@ -219,13 +219,13 @@
 
             <div class="card">
               <div class="card-header">
-                <i class="far fa-address-card"></i> 常用地址
+                <i class="far fa-address-card"></i> Addresses
               </div>
               <div class="card-body">
                 <dl>
-                  <dt>ATX-AGENT地址</dt>
+                  <dt>ATX-AGENT address</dt>
                   <dd><code v-text="address"></code></dd>
-                  <dt>ADB远程连接</dt>
+                  <dt>ADB Address</dt>
                   <dd><code v-text="remoteConnectAddr"></code>
                     <i :data-clipboard-text="remoteConnectAddr" class="far fa-copy clipboard-copy cursor-pointer"></i>
                   </dd>
@@ -236,14 +236,14 @@
             <div class="card">
               <div class="card-header">
                 <i class="fa fa-globe"></i>
-                浏览器打开URL
+                Open URL in Browser
               </div>
               <div class="card-body">
-                <textarea class="form-control" placeholder="在这里输入URL" rows=2 v-model="browserUrl"
+                <textarea class="form-control" placeholder="Type URL here..." rows=2 v-model="browserUrl"
                   @keyup.enter="openBrowser(browserUrl)"></textarea>
                 <div style="padding-top: 5px">
                   <button type="button" class="btn btn-primary btn-sm float-right"
-                    @click='openBrowser(browserUrl)'>打开</button>
+                    @click='openBrowser(browserUrl)'>Open</button>
                 </div>
               </div>
             </div>
@@ -251,7 +251,7 @@
             <div class="card">
               <div class="card-header">
                 <i class="fas fa-blind"></i>
-                快捷入口
+                Shortcuts
               </div>
               <div class="card-body">
                 <button class="btn btn-sm btn-sm btn-outline-primary"
@@ -262,7 +262,7 @@
                 <button class="btn btn-sm btn-outline-primary"
                   @click="runShell('am start -a com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS')">
                   <i class="fas fa-wrench"></i>
-                  开发者
+                  Developer
                 </button>
                 <button class="btn btn-sm btn-outline-primary"
                   @click="runShell('am start -a android.settings.WIRELESS_SETTINGS')">
@@ -276,20 +276,20 @@
                 </span>
                 <el-popover placement="right" width="400" trigger="click" v-model="userSettings.visible">
                   <div>
-                    <h4>增加快捷命令</h4>
+                    <h4>Add Shortcut</h4>
                     <div class="form-group">
-                      <label>名称</label>
+                      <label>Name</label>
                       <input class="form-control" v-model="userSettings.inputName" type="text">
                     </div>
                     <div class="form-group">
-                      <label>SHELL命令</label>
+                      <label>Shell Command</label>
                       <input class="form-control" v-model="userSettings.inputCommand" type="text">
                     </div>
                     <el-button size="small" @click="addShortcut(userSettings.inputName, userSettings.inputCommand)">
-                      添加
+                      Add
                     </el-button>
                   </div>
-                  <el-button title="Alt+左键 删除" size="small" round slot="reference"><i class="fas fa-plus"></i>
+                  <el-button title="Alt+Left Del" size="small" round slot="reference"><i class="fas fa-plus"></i>
                   </el-button>
                 </el-popover>
                 <!-- <div style="color: gray; font-size: 0.6em; text-align: right">Alt+左键 删除</div> -->
@@ -301,7 +301,7 @@
             <div class="card">
               <div class="card-header">
                 <i class="fab fa-app-store-ios"></i>
-                当前应用
+                Current App
               </div>
               <div class="card-body">
                 <div class="form-group">
@@ -313,38 +313,38 @@
                 <div class="btn-group">
                   <button type="button" class="btn btn-sm btn-outline-primary" @click="refreshTopApp"><i
                       class="fas fa-sync"></i>
-                    刷新</button>
+                    Refresh</button>
                   <button type="button" :disabled="!topApp.packageName" class="btn btn-sm btn-outline-primary"
                     @click='runShell("am force-stop "+topApp.packageName)'><i class="fas fa-stop-circle"></i>
                     Kill</button>
                   <button type="button" :disabled="!topApp.packageName" class="btn btn-sm btn-outline-primary"
-                    @click="addTopAppToShortcut"><i class="fas fa-blind"></i> 添加到快捷入口</button>
+                    @click="addTopAppToShortcut"><i class="fas fa-blind"></i> Add to Shortcut</button>
                 </div>
               </div>
             </div>
           </div>
         </el-tab-pane>
         <el-tab-pane label="Terminal" name="terminal">
-          <p><code>Ctrl+Ins</code>复制，<code>Shift+Ins</code>粘贴</p>
+          <p><code>Ctrl+Ins</code>Copy.<code>Shift+Ins</code>Paste.</p>
           <div ref="xterm" class="xterm-wrapper"></div>
           <div>
-            <strong>常用命令</strong>
+            <strong>Useful Commands</strong>
             <ul>
-              <li>查看IP地址
+              <li>Show IP
                 <term-snippet :term="term" command="ifconfig | grep Mask" />
               </li>
-              <li>查看前台应用
+              <li>Show Forground Apps
                 <term-snippet :term="term" command="dumpsys activity activities | grep mFocusedActivity" />
               </li>
-              <li>列出第三方应用
+              <li>Show 3rd Party Apps
                 <term-snippet :term="term" command="pm list packages -3" />
               </li>
-              <li>屏幕分辨率
+              <li>Show Screen Reselution
                 <term-snippet :term="term" command="wm size" />
               </li>
-              <li>点亮屏幕
+              <li>Turn on Screen
                 <term-snippet :term="term" command="input keyevent 224"></term-snippet>
-                熄灭屏幕
+                Turn off Screen
                 <term-snippet :term="term" command="input keyevent 223"></term-snippet>
               </li>
               <li>
@@ -352,16 +352,16 @@
                 <term-snippet :term="term" command="LD_LIBRARY_PATH=/data/local/tmp /data/local/tmp/minicap -i">
                 </term-snippet>
               </li>
-              <li>更多参考 <a href="https://github.com/mzlogin/awesome-adb" target="_blank">awesome-adb</a>
+              <li>Refer to <a href="https://github.com/mzlogin/awesome-adb" target="_blank">awesome-adb</a>
               </li>
             </ul>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="安装管理" name="installmanager">
+        <el-tab-pane label="Installation" name="installmanager">
           <el-upload ref="upload" class="upload-demo" drag action="/uploads" :on-success="onUpload" multiple>
             <i class="el-icon-upload"></i>
-            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-            <div class="el-upload__tip" slot="tip">暂时只支持apk的上传</div>
+            <div class="el-upload__text">Drop package here to install，or <em>click to upload</em></div>
+            <div class="el-upload__tip" slot="tip">apk file only</div>
           </el-upload>
           <div class="form-group">
             <label
@@ -369,24 +369,24 @@
             <input type="text" class="form-control form-control-sm" placeholder="http://..." v-model="app.installUrl">
           </div>
           <div>
-            <el-checkbox v-model="app.launch">安装完成后启动应用</el-checkbox>
+            <el-checkbox v-model="app.launch">Auto launch once installed</el-checkbox>
           </div>
           <button class="btn btn-outline-primary btn-sm" @click="appInstall"
-            :disabled="!app.finished || !app.installUrl">安裝</button>
+            :disabled="!app.finished || !app.installUrl">Install</button>
           <p>
             <pre v-show="!!app.message" v-text="app.message"></pre>
             <small><code v-text="app.packageName"></code></small>
           </p>
         </el-tab-pane>
-        <el-tab-pane label="文件管理" name="filemanager">
+        <el-tab-pane label="File Exploror" name="filemanager">
           <div class="filemanagerDiv" :style="canvasStyle" style="overflow-y:auto">
-            <el-button size="mini" type="primary" @click="getPhoneFile('/sdcard')">返回 sdcard</el-button>
-            <el-button size="mini" type="primary" @click="getPhoneFile('..')">返回上层</el-button>
-            <el-input size="mini" v-model="phoneDir" placeholder="目标目录" :disabled="true">
-              <template slot="prepend">当前目录：</template>
+            <el-button size="mini" type="primary" @click="getPhoneFile('/sdcard')">Back to sdcard</el-button>
+            <el-button size="mini" type="primary" @click="getPhoneFile('..')">Up</el-button>
+            <el-input size="mini" v-model="phoneDir" placeholder="Target Dir:" :disabled="true">
+              <template slot="prepend">Current Dir: </template>
             </el-input>
             <el-table size="mini" :data="phoneFiles">
-              <el-table-column label="文件名（点击选择文件夹）">
+              <el-table-column label="Filename（Click to select dir）">
                 <template slot-scope="scope">
                   <div width="100%" @dblclick="getPhoneFile(`${scope.row}`)">
                     <span v-text="scope.row"></span>
@@ -396,29 +396,29 @@
             </el-table>
           </div>
         </el-tab-pane>
-        <el-tab-pane label="截图" name="screenshot">
-          <a :href="screenshotUrl+'?download=screenshot.jpg'" download>下载截图</a>
+        <el-tab-pane label="Screenshot" name="screenshot">
+          <a :href="screenshotUrl+'?download=screenshot.jpg'" download>Download</a>
         </el-tab-pane>
-        <el-tab-pane label="应用管理" name="packagemanager">
-          <el-button icon="el-icon-refresh" size="small" @click="loadPackages">刷新</el-button>
+        <el-tab-pane label="App Management" name="packagemanager">
+          <el-button icon="el-icon-refresh" size="small" @click="loadPackages">Refresh</el-button>
           <el-table :data="packages" :default-sort="{prop: 'name'}">
-            <el-table-column sortable prop="label" label="应用">
+            <el-table-column sortable prop="label" label="App">
               <template slot-scope="scope">
                 <img :src="`${deviceUrl}/packages/${scope.row.name}/icon`" onerror="this.onerror='';this.src='/static/images/transparent.png'"
                   style="position: absolute; top: 50%; margin: -20px; height: 40px; left: 20px;" alt="icon" />
                 <span v-text=" scope.row.label" style="padding-left: 45px"></span>
               </template>
             </el-table-column>
-            <el-table-column sortable prop="name" label="包名"></el-table-column>
-            <el-table-column sortable label="版本号">
+            <el-table-column sortable prop="name" label="Package Name"></el-table-column>
+            <el-table-column sortable label="Version">
               <template slot-scope="scope" v-if="scope.row.versionName">
                 <span v-text="scope.row.versionName"></span>(<span v-text="scope.row.versionCode"></span>)
               </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="Actions">
               <template slot-scope="scope">
-                <a class="color-red" href="javascript:void(0)" @click="removePackage(scope.row.name)">卸载</a>
-                <a href="javascript:void(0)" @click="appLaunch(scope.row.name)">启动</a>
+                <a class="color-red" href="javascript:void(0)" @click="removePackage(scope.row.name)">Uninstall</a>
+                <a href="javascript:void(0)" @click="appLaunch(scope.row.name)">Launch</a>
               </template>
             </el-table-column>
           </el-table>
@@ -497,7 +497,7 @@
             visible: false,
             shortcuts: [{
               command: "input keyevent POWER",
-              name: '删除',
+              name: 'Refresh',
             }]
           }, {}),
           phoneFiles: [],
@@ -521,7 +521,7 @@
           appInstall() {
             this.app.packageName = ""
             this.app.finished = false
-            this.app.message = "安裝中 ..."
+            this.app.message = "Installing ..."
 
             $.ajax({
               method: "post",
@@ -553,9 +553,9 @@
             })
           },
           addTopAppToShortcut() {
-            this.$prompt('给 <code>' + this.topApp.packageName + '</code> 起个名字', '快捷方式添加', {
-              confirmButtonText: '确定',
-              cancelButtonText: '取消',
+            this.$prompt('Give a name to <code>' + this.topApp.packageName + '</code>', 'Add Shortcut', {
+              confirmButtonText: 'OK',
+              cancelButtonText: 'Cancel',
               dangerouslyUseHTMLString: true,
             }).then(({ value }) => {
               let command = ["monkey", "-p", this.topApp.packageName, "-c", "android.intent.category.LAUNCHER", "1"].join(" ")
@@ -566,8 +566,8 @@
           fixInputMethod(quite) {
             if (!quite) {
               this.$notify.info({
-                title: "输入法",
-                message: "修复中",
+                title: "Input Method",
+                message: "Fixing...",
               })
             }
             const inputMethod = "com.buscode.whatsinput/.WifiInputMethod"
@@ -582,11 +582,11 @@
               })
               .then(() => {
                 if (!quite) {
-                  this.$notify.success({ message: "输入法修复完成" })
+                  this.$notify.success({ message: "Input Method Fixed" })
                 }
               }, () => {
                 if (!quite) {
-                  this.$notify.success({ message: "输入法修复失败，F12查看详情" })
+                  this.$notify.success({ message: "Failed to fix input method，press F12 to see details" })
                 }
               })
           },
@@ -662,7 +662,7 @@
                 "shortcuts": this.userSettings.shortcuts,
               })
             }).then(ret => {
-              console.log("设置已更新")
+              console.log("Settings updated")
             })
           },
           triggerShortcut(v) {
@@ -836,7 +836,7 @@
               if (this.phoneFiles[0].search("^ls.*Not a directory$") == 0) {
                 this.$message({
                   showClose: true,
-                  message: "不是文件夹",
+                  message: "Not a directory",
                   type: "error"
                 });
                 this.getPhoneFile('..');
@@ -871,7 +871,7 @@
             })
           },
           removePackage(packageName) {
-            if (!confirm(`确认卸载 ${packageName} ?`)) {
+            if (!confirm(`Confirm to uninstall ${packageName} ?`)) {
               return
             }
             return this.runShell(`pm uninstall ${packageName}`).then(() => {
@@ -915,7 +915,7 @@
                 this.websockets.screen = null;
                 this.$message({
                   showClose: true,
-                  message: '设备屏幕同步中断',
+                  message: 'Screen streaming interupped',
                   type: 'error',
                 });
                 this.canvasStyle.opacity = 0.5;
@@ -1323,9 +1323,9 @@
                     this.closeWindowWhenReleased(5000)
                   })
                   .fail(ret => {
-                    let content = '设备' + this.idleTimeout + "秒内没有操作，设备自动释放，点击刷新重新占用该设备"
-                    this.$alert(content, '设备超时提示', {
-                      confirmButtonText: '刷新',
+                    let content = 'No user actions for the past ' + this.idleTimeout + " seconds，device is released, click refresh"
+                    this.$alert(content, 'Timeout', {
+                      confirmButtonText: 'Refresh',
                       type: 'warning'
                     }).then(() => {
                       location.reload()
@@ -1340,7 +1340,7 @@
                   })
                   .fail(function (ret) {
                     console.log(ret)
-                    alert("设备可能被释放了，Press F12 to debug")
+                    alert("Device might be released, F12 to debug")
                   })
               }
             }, interval)
